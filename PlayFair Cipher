@@ -1,0 +1,151 @@
+package javaapplication1;
+
+import java.util.Scanner;
+
+public class JavaApplication1 {
+
+    static char matrix[][] = new char[5][5];
+
+    // Create the 5 x 5 Playfair matrix
+    static void createMatrix(String key) {
+
+        boolean used[] = new boolean[26];
+
+        key = key.toUpperCase().replace("J", "I");
+
+        String str = "";
+
+        // Add characters from the key
+        for (int i = 0; i < key.length(); i++) {
+
+            char ch = key.charAt(i);
+
+            if (ch >= 'A' && ch <= 'Z' && !used[ch - 'A']) {
+                used[ch - 'A'] = true;
+                str += ch;
+            }
+        }
+
+        // Add remaining alphabets
+        for (char ch = 'A'; ch <= 'Z'; ch++) {
+
+            if (ch == 'J')
+                continue;
+
+            if (!used[ch - 'A']) {
+                used[ch - 'A'] = true;
+                str += ch;
+            }
+        }
+
+        // Fill the 5 x 5 matrix
+        int k = 0;
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                matrix[i][j] = str.charAt(k++);
+            }
+        }
+    }
+
+    // Find the position of a character in the matrix
+    static int[] findPosition(char ch) {
+
+        if (ch == 'J')
+            ch = 'I';
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+
+                if (matrix[i][j] == ch) {
+                    return new int[] { i, j };
+                }
+            }
+        }
+
+        return null;
+    }
+
+    // Encrypt the plaintext using Playfair Cipher
+    static String encrypt(String text) {
+
+        text = text.toUpperCase()
+                   .replace(" ", "")
+                   .replace("J", "I");
+
+        // If length is odd, add X
+        if (text.length() % 2 != 0)
+            text += "X";
+
+        String result = "";
+
+        // Process two characters at a time
+        for (int i = 0; i < text.length(); i += 2) {
+
+            char a = text.charAt(i);
+            char b = text.charAt(i + 1);
+
+            int p1[] = findPosition(a);
+            int p2[] = findPosition(b);
+
+            // Same row
+            if (p1[0] == p2[0]) {
+
+                result += matrix[p1[0]][(p1[1] + 1) % 5];
+                result += matrix[p2[0]][(p2[1] + 1) % 5];
+            }
+
+            // Same column
+            else if (p1[1] == p2[1]) {
+
+                result += matrix[(p1[0] + 1) % 5][p1[1]];
+                result += matrix[(p2[0] + 1) % 5][p2[1]];
+            }
+
+            // Rectangle rule
+            else {
+
+                result += matrix[p1[0]][p2[1]];
+                result += matrix[p2[0]][p1[1]];
+            }
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        // Get keyword
+        System.out.print("Enter Keyword: ");
+        String key = sc.nextLine();
+
+        // Create Playfair matrix
+        createMatrix(key);
+
+        // Display matrix
+        System.out.println("\nKey Matrix:");
+
+        for (int i = 0; i < 5; i++) {
+
+            for (int j = 0; j < 5; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+
+            System.out.println();
+        }
+
+        // Get plaintext
+        System.out.print("\nEnter Plaintext: ");
+        String text = sc.nextLine();
+
+        // Encrypt plaintext
+        String cipher = encrypt(text);
+
+        // Display ciphertext
+        System.out.println("Cipher Text: " + cipher);
+
+        sc.close();
+    }
+}
