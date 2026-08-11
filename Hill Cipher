@@ -1,0 +1,97 @@
+import java.util.Scanner;
+
+public class HillCipher {
+
+    // Key matrix
+    static int[][] key = {
+        {3, 25},
+        {24, 17}
+    };
+
+    // Encryption
+    static String encrypt(String text) {
+
+        text = text.toUpperCase().replaceAll("[^A-Z]", "");
+
+        // If length is odd, add Z
+        if (text.length() % 2 != 0) {
+            text = text + "Z";
+        }
+
+        StringBuilder cipher = new StringBuilder();
+
+        // Process two characters at a time
+        for (int i = 0; i < text.length(); i += 2) {
+
+            int p1 = text.charAt(i) - 'A';
+            int p2 = text.charAt(i + 1) - 'A';
+
+            int c1 = (key[0][0] * p1 + key[0][1] * p2) % 26;
+            int c2 = (key[1][0] * p1 + key[1][1] * p2) % 26;
+
+            cipher.append((char) (c1 + 'A'));
+            cipher.append((char) (c2 + 'A'));
+        }
+
+        return cipher.toString();
+    }
+
+    // Decryption
+    static String decrypt(String cipher) {
+
+        // Inverse key matrix
+        static int[][] inverseKey = {
+            {3, 17},
+            {8, 25}
+        };
+
+        StringBuilder plain = new StringBuilder();
+
+        // Process two characters at a time
+        for (int i = 0; i < cipher.length(); i += 2) {
+
+            int c1 = cipher.charAt(i) - 'A';
+            int c2 = cipher.charAt(i + 1) - 'A';
+
+            int p1 = (inverseKey[0][0] * c1
+                    + inverseKey[0][1] * c2) % 26;
+
+            int p2 = (inverseKey[1][0] * c1
+                    + inverseKey[1][1] * c2) % 26;
+
+            plain.append((char) (p1 + 'A'));
+            plain.append((char) (p2 + 'A'));
+        }
+
+        return plain.toString();
+    }
+
+    // Main method
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        // Get plaintext
+        System.out.print("Enter Plain Text: ");
+        String plaintext = sc.nextLine();
+
+        // Encryption
+        String cipher = encrypt(plaintext);
+
+        // Display encrypted message
+        System.out.print("Encrypted Message: ");
+
+        for (int i = 0; i < cipher.length(); i += 2) {
+            System.out.print(cipher.substring(i, i + 2) + " ");
+        }
+
+        System.out.println();
+
+        // Decryption
+        String decrypted = decrypt(cipher);
+
+        System.out.println("Decrypted Message: " + decrypted);
+
+        sc.close();
+    }
+}
