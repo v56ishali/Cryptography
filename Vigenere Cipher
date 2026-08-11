@@ -1,0 +1,100 @@
+import java.util.Scanner;
+
+public class VigenereCipher {
+
+    // Encryption
+    public static String encrypt(String plaintext, String key) {
+
+        StringBuilder cipherText = new StringBuilder();
+
+        plaintext = plaintext.toUpperCase();
+        key = key.toUpperCase();
+
+        int keyIndex = 0;
+
+        for (int i = 0; i < plaintext.length(); i++) {
+
+            char ch = plaintext.charAt(i);
+
+            if (ch >= 'A' && ch <= 'Z') {
+
+                int p = ch - 'A';
+                int k = key.charAt(keyIndex % key.length()) - 'A';
+
+                int c = (p + k) % 26;
+
+                cipherText.append((char) (c + 'A'));
+
+                keyIndex++;
+            }
+        }
+
+        return cipherText.toString();
+    }
+
+    // Decryption
+    public static String decrypt(String cipherText, String key) {
+
+        StringBuilder plainText = new StringBuilder();
+
+        cipherText = cipherText.toUpperCase();
+        key = key.toUpperCase();
+
+        int keyIndex = 0;
+
+        for (int i = 0; i < cipherText.length(); i++) {
+
+            char ch = cipherText.charAt(i);
+
+            if (ch >= 'A' && ch <= 'Z') {
+
+                int c = ch - 'A';
+                int k = key.charAt(keyIndex % key.length()) - 'A';
+
+                int p = (c - k + 26) % 26;
+
+                plainText.append((char) (p + 'A'));
+
+                keyIndex++;
+            }
+        }
+
+        return plainText.toString();
+    }
+
+    // Main method
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        // Get plaintext
+        System.out.print("Enter Plain Text: ");
+        String plaintext = sc.nextLine();
+
+        // Get key
+        System.out.print("Enter Key: ");
+        String key = sc.nextLine();
+
+        // Remove non-alphabetic characters from key
+        key = key.replaceAll("[^a-zA-Z]", "");
+
+        // Validate key
+        if (key.length() == 0) {
+            System.out.println("Invalid Key");
+            sc.close();
+            return;
+        }
+
+        // Encrypt
+        String cipherText = encrypt(plaintext, key);
+
+        // Decrypt
+        String decryptedText = decrypt(cipherText, key);
+
+        // Display results
+        System.out.println("Cipher Text: " + cipherText);
+        System.out.println("Decrypted Text: " + decryptedText);
+
+        sc.close();
+    }
+}
