@@ -1,0 +1,28 @@
+import java.util.*;
+class ColumnarTransposition {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter message: ");
+        String msg = sc.nextLine().replace(" ", "");
+        System.out.print("Enter keyword: ");
+        String key = sc.nextLine().toUpperCase();
+        int col = key.length();
+        int rows = (int) Math.ceil((double) msg.length() / col);
+        char[][] matrix = new char[rows][col];
+        int k = 0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < col; j++) {
+                if (k < msg.length())
+                    matrix[i][j] = msg.charAt(k++);
+                else
+                    matrix[i][j] = 'X';}}
+        Integer[] order = new Integer[col];
+        for (int i = 0; i < col; i++)
+            order[i] = i;
+        Arrays.sort(order, (a, b) ->
+            Character.compare(key.charAt(a), key.charAt(b)));
+        System.out.print("Cipher Text: ");
+        for (int j : order) {
+            for (int i = 0; i < rows; i++) {
+                System.out.print(matrix[i][j]); }}
+        sc.close();}}
