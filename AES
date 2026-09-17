@@ -1,0 +1,23 @@
+import javax.crypto.*;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.*;
+
+class AES {
+    public static void main(String[] args) throws Exception {
+        String msg = "HELLO";
+        SecretKey key = new SecretKeySpec(
+                "1234567890123456".getBytes(), "AES");
+
+        Cipher c = Cipher.getInstance("AES");
+
+        c.init(Cipher.ENCRYPT_MODE, key);
+        String enc = Base64.getEncoder().encodeToString(c.doFinal(msg.getBytes()));
+
+        c.init(Cipher.DECRYPT_MODE, key);
+        String dec = new String(c.doFinal(Base64.getDecoder().decode(enc)));
+
+        System.out.println("Original: " + msg);
+        System.out.println("Encrypted: " + enc);
+        System.out.println("Decrypted: " + dec);
+    }
+}
