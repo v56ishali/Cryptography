@@ -1,0 +1,31 @@
+import java.util.Scanner
+public class DiffieHellman {
+ static int power(int a, int b, int q) {
+ int result = 1;
+ for (int i = 1; i <= b; i++) {
+ result = (result * a) % q;
+ }
+ return result;}
+ public static void main(String[] args) {
+ Scanner sc = new Scanner(System.in);
+ System.out.print("Enter prime number q: ");
+ int q = sc.nextInt();
+ System.out.print("Enter primitive root a: ");
+ int a = sc.nextInt();
+ System.out.print("Enter private key XA: ");
+ int XA = sc.nextInt();
+ System.out.print("Enter private key XB: ");
+ int XB = sc.nextInt();
+ int YA = power(a, XA, q);
+ int YB = power(a, XB, q);
+ int KA = power(YB, XA, q);
+ int KB = power(YA, XB, q);
+ System.out.println("Public key YA = " + YA);
+ System.out.println("Public key YB = " + YB)
+ System.out.println("Secret key of A = " + KA);
+ System.out.println("Secret key of B = " + KB);
+ if (KA == KB)
+ System.out.println("Key Exchange Successful");
+ else
+ System.out.println("Key Exchange Failed");
+ }
