@@ -1,0 +1,38 @@
+import java.security.*;
+import java.util.Base64;
+import java.util.Scanner;
+
+public class DSS {
+    public static void main(String[] args) throws Exception {
+        Scanner sc = new Scanner(System.in);
+        
+        KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA");
+        keyGen.initialize(1024);
+        KeyPair pair = keyGen.generateKeyPair();
+        PrivateKey privateKey = pair.getPrivate();
+        PublicKey publicKey = pair.getPublic();
+
+        System.out.print("Enter document message to sign: ");
+        String doc = sc.nextLine();
+
+        Signature dsa = Signature.getInstance("SHA1withDSA");
+        dsa.initSign(privateKey);
+        dsa.update(doc.getBytes());
+        byte[] signature = dsa.sign();
+        
+        System.out.println("Document Signed by Alice");
+        System.out.println("Signature: " + Base64.getEncoder().encodeToString(signature));
+
+        Signature verify = Signature.getInstance("SHA1withDSA");
+        verify.initVerify(publicKey);
+        verify.update(doc.getBytes());
+        boolean verified = verify.verify(signature);
+
+        if (verified)
+            System.out.println("Signature Verified - Approved by Bob");
+        else
+            System.out.println("Signature Failed - Not Approved");
+
+        sc.close();
+    }
+}
